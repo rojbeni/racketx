@@ -84,4 +84,4 @@ jobs:
             # Log in to Docker Hub on VPS to pull the newly built images
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ github.repository_owner }}" --password-stdin
             # Deploy the Swarm stack
-            docker stack deploy -c docker-compose.yml store_stack --with-registry-auth
+            docker stack deploy -c docker-stack.yml tennis-store --with-registry-auth
