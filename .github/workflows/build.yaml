@@ -30,20 +30,20 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build and Push Storefront (Frontend)
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: apps/storefront/Dockerfile
-          push: true
-          tags: ${{ github.repository_owner }}/store-storefront:latest
-          build-args: |
-            NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY }}
-            NEXT_PUBLIC_MEDUSA_BACKEND_URL=${{ secrets.NEXT_PUBLIC_MEDUSA_BACKEND_URL }}
-            NEXT_PUBLIC_DEFAULT_REGION=${{ vars.NEXT_PUBLIC_DEFAULT_REGION || 'dk' }}
-            NEXT_PUBLIC_BASE_URL=${{ vars.NEXT_PUBLIC_BASE_URL || 'http://localhost:8000' }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      # - name: Build and Push Storefront (Frontend)
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     file: apps/storefront/Dockerfile
+      #     push: true
+      #     tags: ${{ github.repository_owner }}/store-storefront:latest
+      #     build-args: |
+      #       NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY }}
+      #       NEXT_PUBLIC_MEDUSA_BACKEND_URL=${{ secrets.NEXT_PUBLIC_MEDUSA_BACKEND_URL }}
+      #       NEXT_PUBLIC_DEFAULT_REGION=${{ vars.NEXT_PUBLIC_DEFAULT_REGION || 'dk' }}
+      #       NEXT_PUBLIC_BASE_URL=${{ vars.NEXT_PUBLIC_BASE_URL || 'http://localhost:8000' }}
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
 
   deploy:
     needs: build-and-push
@@ -58,7 +58,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml"
+          source: "docker-stack.yml"
           target: "~/tennis-store/"
 
       - name: Deploy to Docker Swarm
@@ -69,7 +69,6 @@ jobs:
           DB_NAME: ${{ secrets.DB_NAME }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
-          SEED_ON_STARTUP: ${{ vars.SEED_ON_STARTUP || 'false' }}
           NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY }}
           NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${{ secrets.NEXT_PUBLIC_MEDUSA_BACKEND_URL }}
           NEXT_PUBLIC_DEFAULT_REGION: ${{ vars.NEXT_PUBLIC_DEFAULT_REGION || 'dk' }}
@@ -78,13 +77,11 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: DB_USER,DB_PASSWORD,DB_NAME,JWT_SECRET,COOKIE_SECRET,SEED_ON_STARTUP,NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,NEXT_PUBLIC_MEDUSA_BACKEND_URL,NEXT_PUBLIC_DEFAULT_REGION,NEXT_PUBLIC_BASE_URL
+          envs: DB_USER,DB_PASSWORD,DB_NAME,JWT_SECRET,COOKIE_SECRET,NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,NEXT_PUBLIC_MEDUSA_BACKEND_URL,NEXT_PUBLIC_DEFAULT_REGION,NEXT_PUBLIC_BASE_URL
           script: |
             mkdir -p ~/tennis-store
             cd ~/tennis-store
-            
             # Log in to Docker Hub on VPS to pull the newly built images
             echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ github.repository_owner }}" --password-stdin
-            
             # Deploy the Swarm stack
             docker stack deploy -c docker-compose.yml store_stack --with-registry-auth
