@@ -34,6 +34,44 @@ export default async function initial_data_seed({
     ModuleRegistrationName.FULFILLMENT
   );
 
+  logger.info("Seeding default admin user...");
+  const userModuleService = container.resolve(Modules.USER);
+  const authModuleService = container.resolve(Modules.AUTH);
+
+  const email = "admin@test.com";
+  const password = "supersecret";
+
+  const user = await userModuleService.createUsers({
+    email,
+    first_name: "Admin",
+    last_name: "User",
+  });
+
+  const userId = Array.isArray(user) ? user[0].id : user.id;
+
+  const authIdentityResponse = await authModuleService.register("emailpass", {
+    body: {
+      email,
+      password,
+    },
+  });
+
+  if (!authIdentityResponse.success || !authIdentityResponse.authIdentity) {
+    throw new Error(
+      `Failed to register auth identity for default admin: ${authIdentityResponse.error}`
+    );
+  }
+
+  await authModuleService.updateAuthIdentities({
+    id: authIdentityResponse.authIdentity.id,
+    app_metadata: {
+      user_id: userId,
+    },
+  });
+
+  logger.info("Finished seeding default admin user.");
+
+
   const countries = ["gb", "de", "dk", "se", "fr", "es", "it"];
 
   logger.info("Seeding store data...");
@@ -838,3 +876,4 @@ export default async function initial_data_seed({
 
   logger.info("Finished seeding inventory levels data.");
 }
+
