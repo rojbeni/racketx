@@ -1,0 +1,86 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database Service
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER:-tennis-store}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-tennis-store}
+      POSTGRES_DB: ${DB_NAME:-tennis-store}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - tennis-store-network
+
+  # Redis Service for Events, Caching, and Job Queues
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - tennis-store-network
+
+  # Medusa Backend Service
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    image: racketx-backend:latest
+    environment:
+      PORT: 8001
+      DATABASE_URL: postgres://${DB_USER:-capa4it}:${DB_PASSWORD:-capa4it}@postgres:5432/${DB_NAME:-medusa-store}
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-supersecret-change-me-in-prod}
+      COOKIE_SECRET: ${COOKIE_SECRET:-supersecret-change-me-in-prod}
+      STORE_CORS: ${STORE_CORS:-http://localhost:8000,http://127.0.0.1:8000}
+      ADMIN_CORS: ${ADMIN_CORS:-http://localhost:5173,http://localhost:9000}
+      AUTH_CORS: ${AUTH_CORS:-http://localhost:5173,http://localhost:9000,http://localhost:8000}
+      SEED: ${SEED_ON_STARTUP:-true}
+    ports:
+      - "8001:8001"
+    networks:
+      - store-network
+    depends_on:
+      - postgres
+      - redis
+    profiles:
+      - build
+
+  storefront:
+    build:
+      context: .
+      dockerfile: apps/storefront/Dockerfile
+      args:
+        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-pk_0569965e5bebf301671cc77763b3745535ce6381e64acf5c314efdc8f056b02f}
+        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://localhost:8001}
+        NEXT_PUBLIC_DEFAULT_REGION: ${NEXT_PUBLIC_DEFAULT_REGION:-dk}
+        NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:8000}
+    image: racketx-storefront:latest
+    ports:
+      - "8000:8000"
+    networks:
+      - tennis-store-network
+    environment:
+      PORT: 8000
+      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-pk_0569965e5bebf301671cc77763b3745535ce6381e64acf5c314efdc8f056b02f}
+      NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://localhost:8001}
+      NEXT_PUBLIC_DEFAULT_REGION: ${NEXT_PUBLIC_DEFAULT_REGION:-dk}
+      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:8000}
+    depends_on:
+      - backend
+    profiles:
+      - build
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  tennis-store-network:
+    driver: bridge
