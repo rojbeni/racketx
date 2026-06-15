@@ -1,56 +1,42 @@
-# Base image
+# --- STAGE 1: Build ---
 FROM node:20-alpine AS builder
 
-# Set working directory
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV CI=true
+RUN corepack enable && apk add --no-cache libc6-compat
+
 WORKDIR /app
 
-# Install build dependencies
-RUN apk add --no-cache libc6-compat
-
-# Copy package files for dependency installation
-COPY package.json package-lock.json turbo.json ./
+# Copy root lockfile and workspace files from your monorepo context
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+# Copy package manifests from workspaces
 COPY apps/backend/package.json ./apps/backend/
 COPY apps/storefront/package.json ./apps/storefront/
 
-# Install dependencies (including devDependencies for build)
-RUN npm ci
+# Mount the pnpm store cache so it doesn't redownload every time
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-# Copy application code
-COPY apps/storefront ./apps/storefront
+# Copy the entire workspace code base
+COPY . .
 
-# Set build-time arguments for Next.js (crucial for client-side bundle generation)
-ARG NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
-ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL
-ARG NEXT_PUBLIC_DEFAULT_REGION=dk
-ARG NEXT_PUBLIC_BASE_URL=http://localhost:8000
+# Re-run install to link workspaces and source code correctly
+RUN pnpm install --frozen-lockfile --offline
 
-# Set env variables for build time
-ENV NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=$NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
-ENV NEXT_PUBLIC_MEDUSA_BACKEND_URL=$NEXT_PUBLIC_MEDUSA_BACKEND_URL
-ENV NEXT_PUBLIC_DEFAULT_REGION=$NEXT_PUBLIC_DEFAULT_REGION
-ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
-ENV NODE_ENV=production
+RUN pnpm --filter @dtc/storefront build
 
-# Build storefront application
-RUN npm run build --workspace=apps/storefront
-
-# Clean up dev dependencies to keep runner size smaller
-RUN npm prune --omit=dev
-
-# Runner stage
+# --- STAGE 2: Runner ---
 FROM node:20-alpine AS runner
 
 WORKDIR /app
+ENV NODE_ENV=production
+ENV PORT=8000
 
 # Copy application files and node_modules from builder
 COPY --from=builder /app /app
 
-# Expose storefront port (from package.json start script: 8000)
+# Expose storefront port
 EXPOSE 8000
-
-# Set default env variables
-ENV NODE_ENV=production
-ENV PORT=8000
 
 # Set workdir to storefront package to run it
 WORKDIR /app/apps/storefront

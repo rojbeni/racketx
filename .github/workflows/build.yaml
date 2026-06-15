@@ -26,7 +26,7 @@ jobs:
           context: .
           file: apps/backend/Dockerfile
           push: true
-          tags: ${{ github.repository_owner }}/store-backend:latest
+          tags: ${{ github.repository_owner }}/tennis-store-backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

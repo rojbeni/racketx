@@ -5,9 +5,9 @@ services:
   postgres:
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: ${DB_USER:-tennis-store}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-tennis-store}
-      POSTGRES_DB: ${DB_NAME:-tennis-store}
+      POSTGRES_USER: tennis-store
+      POSTGRES_PASSWORD: tennis-store
+      POSTGRES_DB: tennis-store
     ports:
       - "5432:5432"
     volumes:
@@ -19,6 +19,8 @@ services:
   redis:
     image: redis:7-alpine
     command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
     volumes:
       - redis_data:/data
     networks:
@@ -29,26 +31,23 @@ services:
     build:
       context: .
       dockerfile: apps/backend/Dockerfile
-    image: racketx-backend:latest
+    image: tennis-store-backend:latest
     environment:
-      PORT: 8001
-      DATABASE_URL: postgres://${DB_USER:-capa4it}:${DB_PASSWORD:-capa4it}@postgres:5432/${DB_NAME:-medusa-store}
+      DATABASE_URL: postgres://tennis-store:tennis-store@postgres:5432/tennis-store
+      DB_NAME: tennis-store
       REDIS_URL: redis://redis:6379
-      JWT_SECRET: ${JWT_SECRET:-supersecret-change-me-in-prod}
-      COOKIE_SECRET: ${COOKIE_SECRET:-supersecret-change-me-in-prod}
+      JWT_SECRET: ${JWT_SECRET:-supersecret}
+      COOKIE_SECRET: ${COOKIE_SECRET:-supersecret}
       STORE_CORS: ${STORE_CORS:-http://localhost:8000,http://127.0.0.1:8000}
       ADMIN_CORS: ${ADMIN_CORS:-http://localhost:5173,http://localhost:9000}
       AUTH_CORS: ${AUTH_CORS:-http://localhost:5173,http://localhost:9000,http://localhost:8000}
-      SEED: ${SEED_ON_STARTUP:-true}
     ports:
-      - "8001:8001"
+      - "9000:9000"
     networks:
-      - store-network
+      - tennis-store-network
     depends_on:
       - postgres
       - redis
-    profiles:
-      - build
 
   storefront:
     build:
@@ -59,7 +58,7 @@ services:
         NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://localhost:8001}
         NEXT_PUBLIC_DEFAULT_REGION: ${NEXT_PUBLIC_DEFAULT_REGION:-dk}
         NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:8000}
-    image: racketx-storefront:latest
+    image: tennis-store-storefront:latest
     ports:
       - "8000:8000"
     networks:
@@ -72,8 +71,6 @@ services:
       NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:8000}
     depends_on:
       - backend
-    profiles:
-      - build
 
 volumes:
   postgres_data:

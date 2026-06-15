@@ -1,51 +1,47 @@
-# Base image
+# --- STAGE 1: Build & Prune ---
 FROM node:20-alpine AS builder
 
-# Set working directory
+# Install pnpm globally and setup system dependencies for node-gyp build tools
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+ENV CI=true
+RUN corepack enable && apk add --no-cache python3 make g++ gcc
+
 WORKDIR /app
 
-# Install build dependencies (needed for some node packages)
-RUN apk add --no-cache python3 make g++ git libc6-compat
-
-# Copy package files for dependency installation
-COPY package.json package-lock.json turbo.json ./
+# Copy root lockfile and workspace files from your monorepo context
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+# Copy package manifests from workspaces
 COPY apps/backend/package.json ./apps/backend/
 COPY apps/storefront/package.json ./apps/storefront/
 
-# Install dependencies (including devDependencies for build)
-RUN npm ci
+# Mount the pnpm store cache so it doesn't redownload every time
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-# Copy the rest of the application code
-COPY apps/backend ./apps/backend
+# Copy the entire workspace code base
+COPY . .
 
-# Build the backend application
-RUN npm run build --workspace=apps/backend
+# Re-run install to link workspaces and source code correctly
+RUN pnpm install --frozen-lockfile --offline
 
-# Clean up dev dependencies to keep runner size smaller
-RUN npm prune --omit=dev
+RUN pnpm --filter @dtc/backend build
 
-# Runner stage
+# --- STAGE 2: Runner ---
 FROM node:20-alpine AS runner
 
 WORKDIR /app
-
-# Install dos2unix to handle Windows line endings in entrypoint script
-RUN apk add --no-cache dos2unix
-
+ENV NODE_ENV=production
 # Copy application files and node_modules from builder
+
 COPY --from=builder /app /app
 
-# Convert line endings of the entrypoint script just in case
-RUN dos2unix /app/apps/backend/entrypoint.sh && chmod +x /app/apps/backend/entrypoint.sh
-
-# Expose backend port
-EXPOSE 8000
-
-# Set workdir to the backend package to run commands correctly
+# Set workdir to backend package
 WORKDIR /app/apps/backend
 
-# Set default env variables
-ENV NODE_ENV=production
-ENV PORT=8000
+# Create a symbolic link for the public assets folder to serve the admin dashboard
+RUN ln -s .medusa/server/public public
 
-ENTRYPOINT ["./entrypoint.sh"]
+EXPOSE 9000
+
+# Execute database migrations and boot the framework
+CMD ["sh", "-c", "npx medusa db:migrate && npx medusa start"]

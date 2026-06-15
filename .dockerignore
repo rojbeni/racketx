@@ -1,0 +1,12 @@
+# Ignore local dependencies and builds
+node_modules
+.next
+.medusa
+dist
+build
+
+# Ignore git and logs
+.git
+.gitignore
+*.log
+.pnpm-store
