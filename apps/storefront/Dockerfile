@@ -8,6 +8,17 @@ RUN corepack enable && apk add --no-cache libc6-compat
 
 WORKDIR /app
 
+# Declare build arguments with default values
+ARG NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY="pk_0569965e5bebf301671cc77763b3745535ce6381e64acf5c314efdc8f056b02f"
+ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL="http://localhost:8001"
+ARG NEXT_PUBLIC_DEFAULT_REGION="tn"
+ARG NEXT_PUBLIC_BASE_URL="http://localhost:8000"
+# Make them available as environment variables during build time
+ENV NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=$NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+ENV NEXT_PUBLIC_MEDUSA_BACKEND_URL=$NEXT_PUBLIC_MEDUSA_BACKEND_URL
+ENV NEXT_PUBLIC_DEFAULT_REGION=$NEXT_PUBLIC_DEFAULT_REGION
+ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
+
 # Copy root lockfile and workspace files from your monorepo context
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 # Copy package manifests from workspaces

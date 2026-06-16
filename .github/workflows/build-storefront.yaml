@@ -25,7 +25,7 @@ jobs:
           context: .
           file: apps/storefront/Dockerfile
           push: true
-          tags: ${{ github.repository_owner }}/store-storefront:latest
+          tags: ${{ github.repository_owner }}/tennis-store-storefront:latest
           build-args: |
             NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY }}
             NEXT_PUBLIC_MEDUSA_BACKEND_URL=${{ secrets.NEXT_PUBLIC_MEDUSA_BACKEND_URL }}
