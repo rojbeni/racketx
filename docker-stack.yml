@@ -28,9 +28,7 @@ services:
 
   # Traefik Reverse Proxy with Swarm integration and automatic SSL certificates
   traefik:
-    image: traefik:v3.0
-    environment:
-      DOCKER_API_VERSION: "1.40"
+    image: traefik:v3.3
     command:
       # Enable Swarm provider
       - "--providers.swarm=true"
