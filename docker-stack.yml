@@ -96,33 +96,27 @@ services:
         - "traefik.http.routers.backend.tls.certresolver=myresolver"
         - "traefik.http.services.backend.loadbalancer.server.port=9000"
 
-  # Storefront Service (Frontend)
-  # storefront:
-  #   image: rojbeni/store-storefront:latest
-  #   # Secure: Disable direct port mapping so all public traffic routes securely via Traefik over HTTPS
-  #   # ports:
-  #   #   - "8000:8000"
-  #   networks:
-  #     - tennis-store-network
-  #   environment:
-  #     PORT: 8000
-  #     NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-pk_0569965e5bebf301671cc77763b3745535ce6381e64acf5c314efdc8f056b02f}
-  #     NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://localhost:8001}
-  #     NEXT_PUBLIC_DEFAULT_REGION: ${NEXT_PUBLIC_DEFAULT_REGION:-dk}
-  #     NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:8000}
-  #   depends_on:
-  #     - backend
-  #   deploy:
-  #     replicas: 1
-  #     restart_policy:
-  #       condition: on-failure
-  #     labels:
-  #       - "traefik.enable=true"
-  #       - "traefik.http.routers.storefront.rule=Host(`${STORE_DOMAIN:-aceline.online}`)"
-  #       - "traefik.http.routers.storefront.entrypoints=websecure"
-  #       - "traefik.http.routers.storefront.tls=true"
-  #       - "traefik.http.routers.storefront.tls.certresolver=myresolver"
-  #       - "traefik.http.services.storefront.loadbalancer.server.port=8000"
+  #Storefront Service (Frontend)
+  storefront:
+    image: rojbeni/store-storefront:latest
+    # Secure: Disable direct port mapping so all public traffic routes securely via Traefik over HTTPS
+    # ports:
+    #   - "8000:8000"
+    networks:
+      - tennis-store-network
+    depends_on:
+      - backend
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.storefront.rule=Host(`${STORE_DOMAIN:-aceline.online}`)"
+        - "traefik.http.routers.storefront.entrypoints=websecure"
+        - "traefik.http.routers.storefront.tls=true"
+        - "traefik.http.routers.storefront.tls.certresolver=myresolver"
+        - "traefik.http.services.storefront.loadbalancer.server.port=8000"
 
 volumes:
   postgres_data:
