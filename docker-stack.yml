@@ -26,6 +26,40 @@ services:
     networks:
       - tennis-store-network
 
+  # Traefik Reverse Proxy with Swarm integration and automatic SSL certificates
+  traefik:
+    image: traefik:v3.0
+    command:
+      # Enable Swarm provider
+      - "--providers.swarm=true"
+      - "--providers.swarm.exposedByDefault=false"
+      - "--providers.swarm.network=tennis-store-network"
+      # Entrypoints for HTTP (web) and HTTPS (websecure)
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      # Global Redirection: HTTP to HTTPS
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      # Automatic SSL certificates via Let's Encrypt TLS challenge
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=${ACME_EMAIL:-contact@aceline.online}"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--log.level=INFO"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "traefik_certificates:/letsencrypt"
+    networks:
+      - tennis-store-network
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+
   # Medusa Backend Service
   backend:
     image: rojbeni/tennis-store-backend:latest
@@ -89,41 +123,6 @@ services:
   #       - "traefik.http.routers.storefront.tls=true"
   #       - "traefik.http.routers.storefront.tls.certresolver=myresolver"
   #       - "traefik.http.services.storefront.loadbalancer.server.port=8000"
-
-  # Traefik Reverse Proxy with Swarm integration and automatic SSL certificates
-  traefik:
-    image: traefik:v3.0
-    command:
-      # Enable Swarm Docker provider
-      - "--providers.docker=true"
-      - "--providers.docker.swarmMode=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.network=tennis-store-network"
-      # Entrypoints for HTTP (web) and HTTPS (websecure)
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      # Global Redirection: HTTP to HTTPS
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
-      # Automatic SSL certificates via Let's Encrypt TLS challenge
-      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificatesresolvers.myresolver.acme.email=${ACME_EMAIL:-contact@aceline.online}"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
-      - "--log.level=INFO"
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "traefik_certificates:/letsencrypt"
-    networks:
-      - tennis-store-network
-    deploy:
-      placement:
-        constraints:
-          - node.role == manager
-      restart_policy:
-        condition: on-failure
 
 volumes:
   postgres_data:
