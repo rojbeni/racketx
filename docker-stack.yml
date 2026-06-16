@@ -33,7 +33,7 @@ services:
       # Enable Swarm provider
       - "--providers.swarm=true"
       - "--providers.swarm.exposedByDefault=false"
-      - "--providers.swarm.network=tennis-store-network"
+      - "--providers.swarm.network=tennis-store_tennis-store-network"
       # Entrypoints for HTTP (web) and HTTPS (websecure)
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
