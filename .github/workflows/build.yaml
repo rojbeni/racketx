@@ -2,7 +2,7 @@ name: Tennis Store CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-and-push:
@@ -30,20 +30,20 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build and Push Storefront (Frontend)
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: apps/storefront/Dockerfile
-          push: true
-          tags: ${{ github.repository_owner }}/store-storefront:latest
-          build-args: |
-            NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY }}
-            NEXT_PUBLIC_MEDUSA_BACKEND_URL=${{ secrets.NEXT_PUBLIC_MEDUSA_BACKEND_URL }}
-            NEXT_PUBLIC_DEFAULT_REGION=${{ vars.NEXT_PUBLIC_DEFAULT_REGION || 'dk' }}
-            NEXT_PUBLIC_BASE_URL=${{ vars.NEXT_PUBLIC_BASE_URL || 'http://localhost:8000' }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      # - name: Build and Push Storefront (Frontend)
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     file: apps/storefront/Dockerfile
+      #     push: true
+      #     tags: ${{ github.repository_owner }}/store-storefront:latest
+      #     build-args: |
+      #       NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY }}
+      #       NEXT_PUBLIC_MEDUSA_BACKEND_URL=${{ secrets.NEXT_PUBLIC_MEDUSA_BACKEND_URL }}
+      #       NEXT_PUBLIC_DEFAULT_REGION=${{ vars.NEXT_PUBLIC_DEFAULT_REGION || 'dk' }}
+      #       NEXT_PUBLIC_BASE_URL=${{ vars.NEXT_PUBLIC_BASE_URL || 'http://localhost:8000' }}
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
 
   deploy:
     needs: build-and-push
