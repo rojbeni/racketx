@@ -112,7 +112,7 @@ services:
         condition: on-failure
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.storefront.rule=Host(`${STORE_DOMAIN:-aceline.online}`)"
+        - "traefik.http.routers.storefront.rule=Host(`${STORE_DOMAIN:-store.aceline.online}`)"
         - "traefik.http.routers.storefront.entrypoints=websecure"
         - "traefik.http.routers.storefront.tls=true"
         - "traefik.http.routers.storefront.tls.certresolver=myresolver"
