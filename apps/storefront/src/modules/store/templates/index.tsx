@@ -6,10 +6,7 @@ import { SortOptions } from "@modules/store/components/refinement-list/sort-prod
 
 import PaginatedProducts from "./paginated-products"
 
-const StoreTemplate = ({
-  sortBy,
-  page,
-  countryCode,
+const StoreTemplate = ({ sortBy, page, countryCode,
 }: {
   sortBy?: SortOptions
   page?: string
