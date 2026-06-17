@@ -54,29 +54,39 @@ services:
       context: .
       dockerfile: apps/storefront/Dockerfile
       args:
-        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-pk_0569965e5bebf301671cc77763b3745535ce6381e64acf5c314efdc8f056b02f}
-        NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://localhost:8001}
-        NEXT_PUBLIC_DEFAULT_REGION: ${NEXT_PUBLIC_DEFAULT_REGION:-dk}
-        NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:8000}
+        NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: pk_17c7f134268d580d4937fe4b1941a3796e845cfcd04c4962a5c7aab932dd9c92
+        NEXT_PUBLIC_MEDUSA_BACKEND_URL: http://localhost:9000
+        NEXT_PUBLIC_DEFAULT_REGION: fr
+        NEXT_PUBLIC_BASE_URL: http://localhost:8000
     image: tennis-store-storefront:latest
+    environment:
+      NEXT_PUBLIC_MEDUSA_BACKEND_URL: https://host.docker.internal
+      NEXT_PUBLIC_BASE_URL: http://localhost:8000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "8000:8000"
     networks:
       - tennis-store-network
-    environment:
-      PORT: 8000
-      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:-pk_0569965e5bebf301671cc77763b3745535ce6381e64acf5c314efdc8f056b02f}
-      NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://localhost:8001}
-      NEXT_PUBLIC_DEFAULT_REGION: ${NEXT_PUBLIC_DEFAULT_REGION:-dk}
-      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-http://localhost:8000}
-    depends_on:
-      - backend
+
+  proxy:
+    image: caddy:2-alpine
+    ports:
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - tennis-store-network
 
 volumes:
   postgres_data:
     driver: local
   redis_data:
     driver: local
+  caddy_data:
+  caddy_config:
 
 networks:
   tennis-store-network:

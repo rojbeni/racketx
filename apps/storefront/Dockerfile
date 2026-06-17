@@ -10,9 +10,10 @@ WORKDIR /app
 
 # Declare build arguments with default values
 ARG NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY="pk_5f303b02910aea86dc6841f489df2361b4f64069e00348195093d9a15021f0c6"
-ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL="https://aceline.online"
 ARG NEXT_PUBLIC_DEFAULT_REGION="fr"
+ARG NEXT_PUBLIC_MEDUSA_BACKEND_URL="https://aceline.online"
 ARG NEXT_PUBLIC_BASE_URL="https://store.aceline.online"
+
 # Make them available as environment variables during build time
 ENV NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=$NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
 ENV NEXT_PUBLIC_MEDUSA_BACKEND_URL=$NEXT_PUBLIC_MEDUSA_BACKEND_URL
@@ -48,9 +49,7 @@ COPY --from=builder /app /app
 
 # Expose storefront port
 EXPOSE 8000
-
 # Set workdir to storefront package to run it
 WORKDIR /app/apps/storefront
-
 # Start storefront application
 CMD ["npm", "run", "start"]

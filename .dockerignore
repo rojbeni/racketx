@@ -10,3 +10,6 @@ build
 .gitignore
 *.log
 .pnpm-store
+
+#ignore local env and build files
+.env.local

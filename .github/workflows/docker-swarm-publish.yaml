@@ -30,7 +30,7 @@ jobs:
           NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY }}
           NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${{ secrets.NEXT_PUBLIC_MEDUSA_BACKEND_URL }}
           NEXT_PUBLIC_DEFAULT_REGION: ${{ vars.NEXT_PUBLIC_DEFAULT_REGION || 'dk' }}
-          NEXT_PUBLIC_BASE_URL: ${{ vars.NEXT_PUBLIC_BASE_URL || 'http://localhost:8000' }}
+          NEXT_PUBLIC_BASE_URL: ${{ vars.NEXT_PUBLIC_BASE_URL }}
           BACKEND_DOMAIN: ${{ vars.BACKEND_DOMAIN || secrets.BACKEND_DOMAIN }}
           STORE_DOMAIN: ${{ vars.STORE_DOMAIN || secrets.STORE_DOMAIN }}
           ACME_EMAIL: ${{ vars.ACME_EMAIL || secrets.ACME_EMAIL }}

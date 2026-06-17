@@ -102,6 +102,9 @@ services:
     # Secure: Disable direct port mapping so all public traffic routes securely via Traefik over HTTPS
     # ports:
     #   - "8000:8000"
+    environment:
+      NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-https://aceline.online}
+      NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL:-https://store.aceline.online}
     networks:
       - tennis-store-network
     depends_on:
