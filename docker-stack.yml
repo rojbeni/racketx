@@ -98,7 +98,7 @@ services:
 
   #Storefront Service (Frontend)
   storefront:
-    image: rojbeni/store-storefront:latest
+    image: rojbeni/tennis-store-storefront:latest
     # Secure: Disable direct port mapping so all public traffic routes securely via Traefik over HTTPS
     # ports:
     #   - "8000:8000"
