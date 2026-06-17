@@ -34,6 +34,12 @@ jobs:
           BACKEND_DOMAIN: ${{ vars.BACKEND_DOMAIN || secrets.BACKEND_DOMAIN }}
           STORE_DOMAIN: ${{ vars.STORE_DOMAIN || secrets.STORE_DOMAIN }}
           ACME_EMAIL: ${{ vars.ACME_EMAIL || secrets.ACME_EMAIL }}
+          R2_BUCKET_NAME: "${{secrets.R2_BUCKET_NAME}}"
+          R2_ACCESS_KEY_ID: "${{secrets.R2_ACCESS_KEY_ID}}"
+          R2_SECRET_ACCESS_KEY: "${{secrets.R2_SECRET_ACCESS_KEY}}"
+          R2_ACCOUNT_ID: "${{secrets.R2_ACCOUNT_ID}}"
+          R2_PUBLIC_URL: "${{vars.R2_PUBLIC_URL}}"
+
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}

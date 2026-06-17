@@ -72,6 +72,11 @@ services:
       STORE_CORS: ${STORE_CORS:-http://localhost:8000,http://127.0.0.1:8000}
       ADMIN_CORS: ${ADMIN_CORS:-http://localhost:5173,http://localhost:9000}
       AUTH_CORS: ${AUTH_CORS:-http://localhost:5173,http://localhost:9000,http://localhost:8000}
+      R2_BUCKET_NAME: "${R2_BUCKET_NAME}"
+      R2_ACCESS_KEY_ID: "${R2_ACCESS_KEY_ID}"
+      R2_SECRET_ACCESS_KEY: "${R2_SECRET_ACCESS_KEY}"
+      R2_ACCOUNT_ID: "${R2_ACCOUNT_ID}"
+      R2_PUBLIC_URL: "${R2_PUBLIC_URL}"
     # Secure: Disable direct port mapping so all public traffic routes securely via Traefik over HTTPS
     # ports:
     #   - "9000:9000"
