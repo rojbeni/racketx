@@ -4,6 +4,9 @@ import FeaturedProducts from "@modules/home/components/featured-products"
 import { listCollections } from "@lib/data/collections"
 import { getRegion } from "@lib/data/regions"
 import StoreTemplate from "@modules/store/templates"
+import { listCategories } from "@lib/data/categories"
+import { SortOptions } from "@modules/store/components/sort"
+import Hero from "@modules/home/components/hero"
 
 export const metadata: Metadata = {
   title: "aceline store",
@@ -13,6 +16,11 @@ export const metadata: Metadata = {
 
 export default async function Home(props: {
   params: Promise<{ countryCode: string }>
+  searchParams: Promise<{
+    sortBy?: SortOptions
+    page?: string
+    category?: string
+  }>
 }) {
   const params = await props.params
   const { countryCode } = params
@@ -24,7 +32,7 @@ export default async function Home(props: {
 
   return (
     <>
-      <StoreTemplate countryCode={countryCode}></StoreTemplate>
+      <Hero />
       <div className="py-12">
         <ul className="flex flex-col gap-x-6">
           <FeaturedProducts collections={collections} region={region} />
@@ -33,3 +41,4 @@ export default async function Home(props: {
     </>
   )
 }
+

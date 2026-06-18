@@ -87,8 +87,14 @@ const CartDropdown = ({
             href="/cart"
             data-testid="nav-cart-link"
           >
-            {/* Cart ({totalItems}) */}
-            <ShoppingCart size={20}></ShoppingCart>
+            <div className="relative">
+              <ShoppingCart size={20} />
+              {totalItems > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-full min-w-[16px] h-4 flex items-center justify-center px-1 border border-surface">
+                  {totalItems}
+                </span>
+              )}
+            </div>
 
           </LocalizedClientLink>
         </PopoverButton>
