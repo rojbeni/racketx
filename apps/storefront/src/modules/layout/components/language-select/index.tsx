@@ -120,17 +120,17 @@ const LanguageSelect = ({
         defaultValue={
           currentLocale
             ? options.find(
-                (o) => o.code.toLowerCase() === currentLocale.toLowerCase()
-              ) ?? DEFAULT_OPTION
+              (o) => o.code.toLowerCase() === currentLocale.toLowerCase()
+            ) ?? DEFAULT_OPTION
             : DEFAULT_OPTION
         }
         disabled={isPending}
       >
         <ListboxButton className="py-1 w-full">
-          <div className="txt-compact-small flex items-start gap-x-2">
+          <div className="flex items-start gap-x-2">
             <span>Language:</span>
             {current && (
-              <span className="txt-compact-small flex items-center gap-x-2">
+              <span className="flex items-center gap-x-2">
                 {current.countryCode && (
                   /* @ts-ignore */
                   <ReactCountryFlag
