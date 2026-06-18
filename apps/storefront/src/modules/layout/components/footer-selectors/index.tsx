@@ -23,7 +23,7 @@ export default function FooterSelectors({
   const languageToggleState = useToggleState()
 
   return (
-    <div>
+    <div className="text-xs">
       {!!locales?.length && (
         <div
           className="flex justify-between items-center gap-x-2 cursor-pointer text-ui-fg-subtle hover:text-ui-fg-base transition-colors"

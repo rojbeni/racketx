@@ -28,7 +28,7 @@ export default async function Footer() {
             <p>&copy; {new Date().getFullYear()} Aceline Store. All rights reserved.</p>
           </div>
           <div>
-            <a href="https://facebook.com" target="_blank" aria-label="Facebook" className="flex justify-end mb-5" >
+            <a href="https://facebook.com" target="_blank" aria-label="Facebook" className="flex justify-end" >
               <SiFacebook className="h-6 w-6 " color="default" />
             </a>
             <FooterSelectors regions={regions} locales={locales} currentLocale={currentLocale} />

@@ -12,7 +12,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en" data-mode="light" className="light" suppressHydrationWarning>
       <body className={font.className}>
-        <main className="relative">{props.children}</main>
+        <main className="relative flex flex-col min-h-screen">{props.children}</main>
       </body>
     </html>
   )
