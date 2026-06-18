@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
+    "@icons-pack/react-simple-icons": "^13.13.0",
     "@medusajs/icons": "2.15.5",
     "@medusajs/js-sdk": "2.15.5",
     "@medusajs/ui-preset": "2.15.5",

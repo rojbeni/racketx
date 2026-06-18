@@ -1,10 +1,8 @@
 import { listCategories } from "@lib/data/categories";
 import { listCollections } from "@lib/data/collections";
-import { Text, clx } from "@modules/common/components/ui";
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
-import MedusaCTA from "@modules/layout/components/medusa-cta";
-import { Facebook } from "@medusajs/icons";
+import { SiFacebook } from "@icons-pack/react-simple-icons";
 
 export default async function Footer() {
   const { collections } = await listCollections({
@@ -154,17 +152,21 @@ export default async function Footer() {
     //     </div>
     //   </div>
     // </footer>
-    <footer className="border-t border-ui-border-base w-full py-4">
-      <div className="content-container flex justify-between items-center w-full">
-        <div>
-          <LocalizedClientLink href="/">Aceline Store</LocalizedClientLink>
-          <p>&copy; {new Date().getFullYear()} Aceline Store. All rights reserved.</p>
+    <div className="sticky">
+      <footer className="border-t border-ui-border-base w-full py-4">
+        <div className="content-container flex justify-between items-center w-full">
+          <div>
+            <LocalizedClientLink href="/">Aceline Store</LocalizedClientLink>
+            <p>&copy; {new Date().getFullYear()} Aceline Store. All rights reserved.</p>
+          </div>
+          <div className="flex space-x-6">
+            <a href="https://facebook.com" aria-label="Facebook" className="hover:text-white transition-colors">
+              <SiFacebook className="h-6 w-6" color="default" />
+            </a>
+          </div>
         </div>
-        <div className="flex space-x-6">
-          <a href="#" className="hover:text-white transition-colors"><Facebook /></a>
-        </div>
-      </div>
-    </footer >
+      </footer >
+    </div>
 
 
   );

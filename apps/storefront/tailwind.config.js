@@ -1,7 +1,7 @@
 const path = require("path")
 
 module.exports = {
-  darkMode: "class",
+  darkMode: ["class", '[data-mode="dark"]'],
   presets: [require("@medusajs/ui-preset")],
   content: [
     "./src/app/**/*.{js,ts,jsx,tsx}",
@@ -21,20 +21,19 @@ module.exports = {
       },
       colors: {
         primary: {
-          DEFAULT: '#ccff00',
-          foreground: '#101319',
+          DEFAULT: 'var(--primary)',
+          foreground: 'var(--primary-foreground)',
         },
         surface: {
-          DEFAULT: '#101319',
-          dim: '#101319',
-          bright: '#363940',
+          DEFAULT: 'var(--surface)',
+          dim: 'var(--surface-dim)',
+          bright: 'var(--surface-bright)',
           container: {
-            lowest: '#0b0e14',
-            low: '#191c22',
-            high: '#2a2d34',
+            lowest: 'var(--surface-container-lowest)',
+            low: 'var(--surface-container-low)',
+            high: 'var(--surface-container-high)',
           },
         },
-
       },
       borderRadius: {
         none: "0px",

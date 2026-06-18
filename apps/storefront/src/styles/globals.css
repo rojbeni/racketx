@@ -2,6 +2,42 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@layer base {
+  :root {
+    --primary: #101319;
+    --primary-foreground: #ffffff;
+    --surface: #ffffff;
+    --surface-dim: #f9fafb;
+    --surface-bright: #e5e7eb;
+    --surface-container-lowest: #ffffff;
+    --surface-container-low: #f3f4f6;
+    --surface-container-high: #e5e7eb;
+    --foreground: #101319;
+    --border: #e5e7eb;
+  }
+
+  .dark,
+  [data-mode="dark"] {
+    --primary: #ccff00;
+    --primary-foreground: #101319;
+    --surface: #101319;
+    --surface-dim: #101319;
+    --surface-bright: #363940;
+    --surface-container-lowest: #0b0e14;
+    --surface-container-low: #191c22;
+    --surface-container-high: #2a2d34;
+    --foreground: #ffffff;
+    --border: #363940;
+  }
+
+  body {
+    background-color: var(--surface);
+    color: var(--foreground);
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+}
+
+
 @layer utilities {
   .no-scrollbar::-webkit-scrollbar {
     display: none;
