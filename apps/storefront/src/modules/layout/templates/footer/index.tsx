@@ -156,7 +156,10 @@ export default async function Footer() {
     // </footer>
     <footer className="border-t border-ui-border-base w-full py-4">
       <div className="content-container flex justify-between items-center w-full">
-        <p>&copy; {new Date().getFullYear()} <LocalizedClientLink href="/">Aceline Store</LocalizedClientLink>. All rights reserved.</p>
+        <div>
+          <LocalizedClientLink href="/">Aceline Store</LocalizedClientLink>
+          <p>&copy; {new Date().getFullYear()} Aceline Store. All rights reserved.</p>
+        </div>
         <div className="flex space-x-6">
           <a href="#" className="hover:text-white transition-colors"><Facebook /></a>
         </div>

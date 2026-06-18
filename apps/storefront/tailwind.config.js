@@ -20,19 +20,21 @@ module.exports = {
         padding: "padding-top padding-right padding-bottom padding-left",
       },
       colors: {
-        grey: {
-          0: "#FFFFFF",
-          5: "#F9FAFB",
-          10: "#F3F4F6",
-          20: "#E5E7EB",
-          30: "#D1D5DB",
-          40: "#9CA3AF",
-          50: "#6B7280",
-          60: "#4B5563",
-          70: "#374151",
-          80: "#1F2937",
-          90: "#111827",
+        primary: {
+          DEFAULT: '#ccff00',
+          foreground: '#101319',
         },
+        surface: {
+          DEFAULT: '#101319',
+          dim: '#101319',
+          bright: '#363940',
+          container: {
+            lowest: '#0b0e14',
+            low: '#191c22',
+            high: '#2a2d34',
+          },
+        },
+
       },
       borderRadius: {
         none: "0px",
@@ -53,9 +55,6 @@ module.exports = {
         large: "1440px",
         xlarge: "1680px",
         "2xlarge": "1920px",
-      },
-      fontSize: {
-        "3xl": "2rem",
       },
       fontFamily: {
         sans: [
