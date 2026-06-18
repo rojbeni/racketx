@@ -43,6 +43,15 @@ module.exports = defineConfig({
     },
   ],
   featureFlags: { translation: true, },
+  plugins: [
+    {
+      resolve: "@agilo/medusa-analytics-plugin",
+      options: {
+        redisUrl: process.env.REDIS_URL,
+        ttl: 30
+      },
+    },
+  ],
 })
 
 
