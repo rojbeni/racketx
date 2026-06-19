@@ -14,6 +14,7 @@ import ReactCountryFlag from "react-country-flag"
 import { StateType } from "@lib/hooks/use-toggle-state"
 import { updateLocale } from "@lib/data/locale-actions"
 import { Locale } from "@lib/data/locales"
+import { useTranslation } from "@lib/context/translation-context"
 
 type LanguageOption = {
   code: string
@@ -73,6 +74,7 @@ const LanguageSelect = ({
   locales,
   currentLocale,
 }: LanguageSelectProps) => {
+  const { t } = useTranslation()
   const [current, setCurrent] = useState<LanguageOption | undefined>(undefined)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
@@ -90,8 +92,9 @@ const LanguageSelect = ({
       ),
       countryCode: getCountryCodeFromLocale(locale.code),
     }))
-    return [DEFAULT_OPTION, ...localeOptions]
-  }, [locales, currentLocale])
+    const defaultOpt = { ...DEFAULT_OPTION, localizedName: t("Default"), }
+    return [defaultOpt, ...localeOptions]
+  }, [locales, currentLocale, t])
 
   useEffect(() => {
     if (currentLocale) {
@@ -128,7 +131,7 @@ const LanguageSelect = ({
       >
         <ListboxButton className="py-1 w-full">
           <div className="flex items-start gap-x-2">
-            <span>Language:</span>
+            <span>{t("Language:")}</span>
             {current && (
               <span className="flex items-center gap-x-2">
                 {current.countryCode && (

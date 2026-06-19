@@ -1,6 +1,9 @@
+"use client"
+
 import { Dialog, Transition } from "@headlessui/react"
 import { Button, clx } from "@modules/common/components/ui"
 import React, { Fragment, useMemo } from "react"
+import { useTranslation } from "@lib/context/translation-context"
 
 import useToggleState from "@lib/hooks/use-toggle-state"
 import ChevronDown from "@modules/common/icons/chevron-down"
@@ -34,6 +37,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   show,
   optionsDisabled,
 }) => {
+  const { t } = useTranslation()
   const { state, open, close } = useToggleState()
 
   const price = getProductPrice({
@@ -111,7 +115,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                   <span>
                     {variant
                       ? Object.values(options).join(" / ")
-                      : "Select Options"}
+                      : t("Select Options")}
                   </span>
                   <ChevronDown />
                 </div>
@@ -124,10 +128,10 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                 data-testid="mobile-cart-button"
               >
                 {!variant
-                  ? "Select variant"
+                  ? t("Select variant")
                   : !inStock
-                  ? "Out of stock"
-                  : "Add to cart"}
+                  ? t("Out of stock")
+                  : t("Add to cart")}
               </Button>
             </div>
           </div>

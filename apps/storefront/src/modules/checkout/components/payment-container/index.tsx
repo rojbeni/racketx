@@ -1,6 +1,9 @@
+"use client"
+
 import { Radio as RadioGroupOption } from "@headlessui/react"
 import { Text, clx } from "@modules/common/components/ui"
 import React, { useContext, useMemo, type JSX } from "react"
+import { useTranslation } from "@lib/context/translation-context"
 
 import Radio from "@modules/common/components/radio"
 
@@ -26,6 +29,7 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
   disabled = false,
   children,
 }) => {
+  const { t } = useTranslation()
   const isDevelopment = process.env.NODE_ENV === "development"
 
   return (
@@ -45,7 +49,9 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
         <div className="flex items-center gap-x-4">
           <Radio checked={selectedPaymentOptionId === paymentProviderId} />
           <Text className="text-base-regular">
-            {paymentInfoMap[paymentProviderId]?.title || paymentProviderId}
+            {paymentInfoMap[paymentProviderId]?.title
+              ? t(paymentInfoMap[paymentProviderId].title)
+              : paymentProviderId}
           </Text>
           {isManual(paymentProviderId) && isDevelopment && (
             <PaymentTest className="hidden small:block" />
@@ -78,6 +84,7 @@ export const StripeCardContainer = ({
   setError: (error: string | null) => void
   setCardComplete: (complete: boolean) => void
 }) => {
+  const { t } = useTranslation()
   const stripeReady = useContext(StripeContext)
 
   const useOptions: StripeCardElementOptions = useMemo(() => {
@@ -108,7 +115,7 @@ export const StripeCardContainer = ({
         (stripeReady ? (
           <div className="my-4 transition-all duration-150 ease-in-out">
             <Text className="text-ui-fg-base mb-1">
-              Enter your card details:
+              {t("Enter your card details:")}
             </Text>
             <CardElement
               options={useOptions as StripeCardElementOptions}
