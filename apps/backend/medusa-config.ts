@@ -41,6 +41,28 @@ module.exports = defineConfig({
         ],
       },
     },
+    {
+      resolve: "@medusajs/medusa/notification",
+      options: {
+        providers: [
+          {
+            resolve: "./src/modules/notification-hostinger",
+            id: "hostinger-mail",
+            options: {
+              channels: ["email"],
+              host: process.env.HOSTINGER_SMTP_HOST,
+              port: parseInt(process.env.HOSTINGER_SMTP_PORT || "465"),
+              secure: true,
+              auth: {
+                user: process.env.HOSTINGER_SMTP_USER,
+                pass: process.env.HOSTINGER_SMTP_PASS,
+              },
+              from: process.env.HOSTINGER_SMTP_FROM,
+            },
+          },
+        ],
+      },
+    },
   ],
   featureFlags: { translation: true, },
   plugins: [
