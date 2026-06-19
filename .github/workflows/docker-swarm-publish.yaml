@@ -40,6 +40,11 @@ jobs:
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_PUBLIC_URL: ${{ vars.R2_PUBLIC_URL }}
+          HOSTINGER_SMTP_HOST: "${secrets.HOSTINGER_SMTP_HOST}"
+          HOSTINGER_SMTP_PORT: "${secrets.HOSTINGER_SMTP_PORT}"
+          HOSTINGER_SMTP_USER: "${secrets.HOSTINGER_SMTP_USER}"
+          HOSTINGER_SMTP_PASS: "${secrets.HOSTINGER_SMTP_PASS}"
+          HOSTINGER_SMTP_FROM: "${secrets.HOSTINGER_SMTP_FROM}"
 
         with:
           host: ${{ secrets.SSH_HOST }}

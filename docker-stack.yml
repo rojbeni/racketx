@@ -77,6 +77,12 @@ services:
       R2_SECRET_ACCESS_KEY: "${R2_SECRET_ACCESS_KEY}"
       R2_ACCOUNT_ID: "${R2_ACCOUNT_ID}"
       R2_PUBLIC_URL: "${R2_PUBLIC_URL}"
+      HOSTINGER_SMTP_HOST: "${HOSTINGER_SMTP_HOST}"
+      HOSTINGER_SMTP_PORT: "${HOSTINGER_SMTP_PORT}"
+      HOSTINGER_SMTP_USER: "${HOSTINGER_SMTP_USER}"
+      HOSTINGER_SMTP_PASS: "${HOSTINGER_SMTP_PASS}"
+      HOSTINGER_SMTP_FROM: "${HOSTINGER_SMTP_FROM}"
+
     # Secure: Disable direct port mapping so all public traffic routes securely via Traefik over HTTPS
     # ports:
     #   - "9000:9000"
