@@ -6,28 +6,44 @@
   :root {
     --primary: #101319;
     --primary-foreground: #ffffff;
+    --primary-container: #1c1b1b;
+    --on-primary-container: #858383;
     --surface: #ffffff;
     --surface-dim: #f9fafb;
     --surface-bright: #e5e7eb;
     --surface-container-lowest: #ffffff;
     --surface-container-low: #f3f4f6;
+    --surface-container: #eeeeee;
     --surface-container-high: #e5e7eb;
+    --surface-container-highest: #e2e2e2;
+    --on-surface: #101319;
+    --on-surface-variant: #444748;
+    --outline: #747878;
+    --outline-variant: #c4c7c7;
     --foreground: #101319;
     --border: #e5e7eb;
   }
 
   .dark,
   [data-mode="dark"] {
-    --primary: #ccff00;
+    --primary: #ffffff;
     --primary-foreground: #101319;
+    --primary-container: #c3f400;
+    --on-primary-container: #556d00;
     --surface: #101319;
     --surface-dim: #101319;
     --surface-bright: #363940;
     --surface-container-lowest: #0b0e14;
     --surface-container-low: #191c22;
-    --surface-container-high: #2a2d34;
-    --foreground: #ffffff;
-    --border: #363940;
+    --surface-container: #1d2026;
+    --surface-container-high: #272a31;
+    --surface-container-highest: #32353b;
+    --on-surface: #e1e2eb;
+    --on-surface-variant: #c4c9ac;
+    --outline: #8e9379;
+    --outline-variant: #444933;
+    --foreground: #e1e2eb;
+    --border: #444933;
   }
 
   body {
@@ -39,6 +55,26 @@
 
 
 @layer utilities {
+  .neon-glow {
+    box-shadow: 0 0 20px rgba(195, 244, 0, 0.15);
+  }
+
+  .performance-card:hover {
+    border-color: #c3f400;
+    transition: all 0.3s ease;
+  }
+
+  .text-neon {
+    color: #c3f400;
+  }
+
+  .bg-neon {
+    background-color: #c3f400;
+  }
+
+  .border-neon {
+    border-color: #c3f400;
+  }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }

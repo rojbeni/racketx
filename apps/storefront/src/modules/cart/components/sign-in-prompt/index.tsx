@@ -8,7 +8,7 @@ const SignInPrompt = () => {
   const { t } = useTranslation()
 
   return (
-    <div className="bg-white flex items-center justify-between">
+    <div className="bg-white dark:bg-transparent flex items-center justify-between">
       <div>
         <Heading level="h2" >
           {t("Already have an account?")}

@@ -23,16 +23,26 @@ module.exports = {
         primary: {
           DEFAULT: 'var(--primary)',
           foreground: 'var(--primary-foreground)',
+          container: 'var(--primary-container)',
+          'on-container': 'var(--on-primary-container)',
         },
         surface: {
           DEFAULT: 'var(--surface)',
           dim: 'var(--surface-dim)',
           bright: 'var(--surface-bright)',
+          on: 'var(--on-surface)',
+          'on-variant': 'var(--on-surface-variant)',
           container: {
             lowest: 'var(--surface-container-lowest)',
             low: 'var(--surface-container-low)',
+            DEFAULT: 'var(--surface-container)',
             high: 'var(--surface-container-high)',
+            highest: 'var(--surface-container-highest)',
           },
+        },
+        outline: {
+          DEFAULT: 'var(--outline)',
+          variant: 'var(--outline-variant)',
         },
       },
       borderRadius: {

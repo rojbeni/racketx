@@ -17,7 +17,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   const langCode = locale ? locale.split("-")[0].toLowerCase() : "en"
 
   return (
-    <html lang={langCode} data-mode="light" className="light" suppressHydrationWarning>
+    <html lang={langCode} data-mode="dark" className="dark" suppressHydrationWarning>
       <body className={font.className}>
         <TranslationProvider locale={locale}>
           <main className="relative flex flex-col min-h-screen">{props.children}</main>

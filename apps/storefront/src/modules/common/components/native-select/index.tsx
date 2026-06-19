@@ -53,9 +53,9 @@ const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(
             ref={innerRef}
             defaultValue={defaultValue}
             {...props}
-            className="appearance-none flex-1 bg-transparent border-none px-4 py-2.5 transition-colors duration-150 outline-none "
+            className="appearance-none flex-1 bg-transparent border-none px-4 py-2.5 transition-colors duration-150 outline-none dark:text-foreground [&>option]:dark:bg-surface-container-high [&>option]:dark:text-foreground"
           >
-            <option disabled value="">
+            <option disabled value="" className="dark:bg-surface-container-high dark:text-foreground">
               {placeholder}
             </option>
             {children}

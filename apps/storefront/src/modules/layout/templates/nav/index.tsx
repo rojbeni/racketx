@@ -2,8 +2,7 @@ import { Suspense } from "react"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
-import SideMenu from "@modules/layout/components/side-menu"
-import { CircleUser, HomeIcon, ShoppingCart } from 'lucide-react';
+import { CircleUser, ShoppingCart } from 'lucide-react';
 import { ArrowRightMini } from "@medusajs/icons"
 import { Button } from "@modules/common/components/ui"
 export default async function Nav() {
@@ -17,13 +16,10 @@ export default async function Nav() {
               href="/"
               data-testid="nav-account-link"
             >
-              <HomeIcon></HomeIcon>
+              Aceline Store
             </LocalizedClientLink>
           </div>
 
-          <div>
-            <span className="block">Aceline Store</span>
-          </div>
           <div className="flex items-center gap-x-6 h-full flex-1 basis-0 justify-end">
             <div className="hidden small:flex items-center gap-x-6 h-full">
               <LocalizedClientLink
