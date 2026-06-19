@@ -3,15 +3,15 @@ import { Metadata } from "next"
 import FeaturedProducts from "@modules/home/components/featured-products"
 import { listCollections } from "@lib/data/collections"
 import { getRegion } from "@lib/data/regions"
-import StoreTemplate from "@modules/store/templates"
-import { listCategories } from "@lib/data/categories"
 import { SortOptions } from "@modules/store/components/sort"
 import Hero from "@modules/home/components/hero"
+import BentoGrid from "@modules/home/components/bento-grid"
+import Philosophy from "@modules/home/components/philosophy"
 
 export const metadata: Metadata = {
   title: "aceline store",
   description:
-    "A performant frontend ecommerce starter template with Next.js 15 and Medusa.",
+    "A performant storefront for premium second-hand tennis gear.",
 }
 
 export default async function Home(props: {
@@ -32,13 +32,19 @@ export default async function Home(props: {
 
   return (
     <>
-      <Hero />
-      <div className="py-12">
+      <div className="content-container flex pt-6">
+        <Hero />
+        <BentoGrid />
+      </div>
+
+      {/* <div className="py-12">
         <ul className="flex flex-col gap-x-6">
           <FeaturedProducts collections={collections} region={region} />
         </ul>
-      </div>
+      </div> */}
+      <Philosophy />
     </>
   )
 }
+
 
