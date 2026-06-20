@@ -13,7 +13,7 @@ export default function BentoGrid() {
           </div>
           <div
             className="w-full h-full transform group-hover:scale-105 transition-transform duration-700 bg-cover bg-center absolute inset-0"
-            style={{ backgroundImage: `url('/rackets.png')` }}
+            style={{ backgroundImage: `url('https://media.aceline.online/rackets.webp')` }}
           />
         </div>
 
@@ -27,7 +27,7 @@ export default function BentoGrid() {
             </div>
             <div
               className="w-full h-full transform group-hover:scale-105 transition-transform duration-700 bg-cover bg-center absolute inset-0"
-              style={{ backgroundImage: `url('/shoes.png')` }}
+              style={{ backgroundImage: `url('https://media.aceline.online/shoes.webp')` }}
             />
           </div>
 
@@ -39,7 +39,7 @@ export default function BentoGrid() {
             </div>
             <div
               className="w-full h-full transform group-hover:scale-105 transition-transform duration-700 bg-cover bg-center absolute inset-0"
-              style={{ backgroundImage: `url('/accessories.png')` }}
+              style={{ backgroundImage: `url('https://media.aceline.online/accessories.webp')` }}
             />
           </div>
         </div>

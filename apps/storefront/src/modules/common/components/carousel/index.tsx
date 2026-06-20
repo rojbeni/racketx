@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface CarouselProps {
@@ -14,69 +15,106 @@ export default function Carousel({
     autoSlide = false,
     autoSlideInterval = 3000,
 }: CarouselProps) {
-    const [curr, setCurr] = useState(0);
+    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
-    const prev = () =>
-        setCurr((curr) => (curr === 0 ? images.length - 1 : curr - 1));
-    const next = () =>
-        setCurr((curr) => (curr === images.length - 1 ? 0 : curr + 1));
+    const scrollPrev = useCallback(() => {
+        if (emblaApi) emblaApi.scrollPrev();
+    }, [emblaApi]);
+
+    const scrollNext = useCallback(() => {
+        if (emblaApi) emblaApi.scrollNext();
+    }, [emblaApi]);
+
+    const scrollTo = useCallback(
+        (index: number) => {
+            if (emblaApi) emblaApi.scrollTo(index);
+        },
+        [emblaApi]
+    );
+
+    const onSelect = useCallback((emblaApi: any) => {
+        setSelectedIndex(emblaApi.selectedScrollSnap());
+    }, []);
+
+    useEffect(() => {
+        if (!emblaApi) return;
+
+        onSelect(emblaApi);
+        setScrollSnaps(emblaApi.scrollSnapList());
+        emblaApi.on('select', onSelect);
+        emblaApi.on('reInit', onSelect);
+    }, [emblaApi, onSelect]);
 
     // Handle auto-sliding
     useEffect(() => {
-        if (!autoSlide) return;
-        const slideInterval = setInterval(next, autoSlideInterval);
-        return () => clearInterval(slideInterval);
-    }, [autoSlide, autoSlideInterval]);
+        if (!autoSlide || !emblaApi) return;
+
+        const interval = setInterval(() => {
+            emblaApi.scrollNext();
+        }, autoSlideInterval);
+
+        return () => clearInterval(interval);
+    }, [autoSlide, autoSlideInterval, emblaApi]);
 
     return (
-        <div className="relative overflow-hidden rounded-2xl w-full max-w-4xl mx-auto group">
-            {/* Slides Container */}
-            <div
-                className="flex transition-transform ease-out duration-500"
-                style={{ transform: `translateX(-${curr * 100}%)` }}
-            >
-                {images.map((img, index) => (
-                    <div key={index} className="w-full flex-shrink-0 aspect-[16/9] relative">
-                        <img
-                            src={img}
-                            alt={`Slide ${index + 1}`}
-                            className="w-full h-full object-cover"
-                        />
-                    </div>
-                ))}
-            </div>
-
-            {/* Navigation Arrows */}
-            <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <button
-                    onClick={prev}
-                    className="p-2 rounded-full shadow bg-white/80 text-gray-800 hover:bg-white transition-colors"
-                >
-                    <ChevronLeft size={24} />
-                </button>
-                <button
-                    onClick={next}
-                    className="p-2 rounded-full shadow bg-white/80 text-gray-800 hover:bg-white transition-colors"
-                >
-                    <ChevronRight size={24} />
-                </button>
-            </div>
-
-            {/* Indicator Dots */}
-            <div className="absolute bottom-4 right-0 left-0">
-                <div className="flex items-center justify-center gap-2">
-                    {images.map((_, i) => (
-                        <button
-                            key={i}
-                            onClick={() => setCurr(i)}
-                            className={`
-                transition-all w-3 h-3 bg-white rounded-full
-                ${curr === i ? "p-1.5 bg-white scale-110" : "bg-white/50"}
-              `}
-                        />
+        <div className="relative w-full max-w-4xl mx-auto group">
+            {/* Viewport wrapper for Embla */}
+            <div className="overflow-hidden rounded-2xl shadow-xl" ref={emblaRef}>
+                {/* Container */}
+                <div className="flex">
+                    {images.map((img, index) => (
+                        <div key={index} className="flex-[0_0_100%] min-w-0 aspect-[16/9] relative">
+                            <img
+                                src={img}
+                                alt={`Slide ${index + 1}`}
+                                className="w-full h-full object-cover select-none"
+                                draggable="false"
+                            />
+                        </div>
                     ))}
                 </div>
             </div>
+
+            {/* Navigation Arrows */}
+            {images.length > 1 && (
+                <div className="absolute inset-0 flex items-center justify-between p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                    <button
+                        onClick={scrollPrev}
+                        className="p-2.5 rounded-full shadow-lg bg-black/30 hover:bg-black/50 text-white backdrop-blur-md border border-white/10 transition-all duration-300 hover:scale-105 active:scale-95 pointer-events-auto"
+                        aria-label="Previous slide"
+                    >
+                        <ChevronLeft size={20} />
+                    </button>
+                    <button
+                        onClick={scrollNext}
+                        className="p-2.5 rounded-full shadow-lg bg-black/30 hover:bg-black/50 text-white backdrop-blur-md border border-white/10 transition-all duration-300 hover:scale-105 active:scale-95 pointer-events-auto"
+                        aria-label="Next slide"
+                    >
+                        <ChevronRight size={20} />
+                    </button>
+                </div>
+            )}
+
+            {/* Indicator Dots */}
+            {images.length > 1 && (
+                <div className="absolute bottom-4 right-0 left-0">
+                    <div className="flex items-center justify-center gap-1.5">
+                        {scrollSnaps.map((_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => scrollTo(i)}
+                                className={`
+                  transition-all duration-300 h-1.5 rounded-full
+                  ${selectedIndex === i ? "w-6 bg-white" : "w-1.5 bg-white/50 hover:bg-white/80"}
+                `}
+                                aria-label={`Go to slide ${i + 1}`}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
