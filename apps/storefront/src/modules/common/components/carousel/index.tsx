@@ -99,7 +99,7 @@ export default function Carousel({
 
             {/* Indicator Dots */}
             {images.length > 1 && (
-                <div className="absolute bottom-4 right-0 left-0">
+                <div className="absolute bottom-4 right-0 left-0 md:hidden">
                     <div className="flex items-center justify-center gap-1.5">
                         {scrollSnaps.map((_, i) => (
                             <button
@@ -113,6 +113,30 @@ export default function Carousel({
                             />
                         ))}
                     </div>
+                </div>
+            )}
+
+            {/* Thumbnail Navigation */}
+            {images.length > 1 && (
+                <div className="mt-5 flex justify-center gap-3 overflow-x-auto py-2 no-scrollbar">
+                    {images.map((img, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => scrollTo(idx)}
+                            className={`relative w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-300 ease-in-out flex-shrink-0 hover:scale-105
+                                ${selectedIndex === idx 
+                                    ? "border-black dark:border-[#c3f400] shadow-lg scale-105" 
+                                    : "border-transparent hover:border-black/20 dark:hover:border-white/10 opacity-60 hover:opacity-100"}`}
+                            aria-label={`Go to slide ${idx + 1}`}
+                        >
+                            <img
+                                src={img}
+                                alt={`Thumbnail ${idx + 1}`}
+                                className="w-full h-full object-cover select-none"
+                                draggable="false"
+                            />
+                        </button>
+                    ))}
                 </div>
             )}
         </div>

@@ -32,18 +32,19 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   return (
     <>
       <div
-        className="content-container flex flex-col small:flex-row small:items-start relative lg:space-x-5"
+        className="content-container flex flex-col small:flex-row small:items-start relative gap-y-8 small:gap-x-12 medium:gap-x-16 py-8"
         data-testid="product-container"
       >
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-6">
-          <ProductInfo product={product} />
-          <ProductTabs product={product} />
-        </div>
-        <div className="block w-full relative">
+        {/* Left Column: Product Gallery */}
+        <div className="block w-full small:flex-1 relative">
           <Carousel images={images.map((img) => img.url!)} />
         </div>
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-12">
+
+        {/* Right Column: Sticky Product Actions and details */}
+        <div className="flex flex-col small:sticky small:top-28 w-full small:max-w-[400px] medium:max-w-[440px] py-4 gap-y-8">
           <ProductOnboardingCta />
+          <ProductInfo product={product} />
+          <div className="h-px bg-border/40 w-full" />
           <Suspense
             fallback={
               <ProductActions
@@ -55,6 +56,10 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           >
             <ProductActionsWrapper id={product.id} region={region} />
           </Suspense>
+
+          <div className="h-px bg-border/40 w-full" />
+
+          <ProductTabs product={product} />
         </div>
       </div>
       <div

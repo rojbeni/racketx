@@ -8,7 +8,7 @@ import Divider from "@modules/common/components/divider"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
 import { isEqual } from "lodash"
 import { useParams, usePathname, useSearchParams } from "next/navigation"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState, useCallback } from "react"
 import ProductPrice from "../product-price"
 import MobileActions from "./mobile-actions"
 import { useRouter } from "next/navigation"
@@ -118,6 +118,43 @@ export default function ProductActions({
     return false
   }, [selectedVariant])
 
+  // Check if a specific option value is out of stock given the current selections of other options
+  const isOptionValueDisabled = useCallback(
+    (optionId: string, value: string) => {
+      // Construct hypothetical selections
+      const hypotheticalOptions = {
+        ...options, [optionId]: value,
+      }
+
+      // Find all variants that match the hypothetical options
+      const matchingVariants = product.variants?.filter((v) => {
+        const variantOptions = optionsAsKeymap(v.options)
+        if (!variantOptions) return false
+
+        // Every option that is selected in hypotheticalOptions must match the variant option
+        return Object.entries(hypotheticalOptions).every(([optId, optVal]) => {
+          if (optVal === undefined) return true // skip if not selected
+          return variantOptions[optId] === optVal
+        })
+      })
+
+      // If there are no matching variants, it means this combination doesn't exist
+      if (!matchingVariants || matchingVariants.length === 0) {
+        return true
+      }
+
+      // Disabled if NONE of the matching variants are in stock
+      const hasAnyInStock = matchingVariants.some((v) => {
+        if (!v.manage_inventory) return true
+        if (v.allow_backorder) return true
+        return (v.inventory_quantity || 0) > 0
+      })
+
+      return !hasAnyInStock
+    },
+    [options, product.variants]
+  )
+
   const actionsRef = useRef<HTMLDivElement>(null)
 
   const inView = useIntersection(actionsRef, "0px")
@@ -125,15 +162,8 @@ export default function ProductActions({
   // add the selected variant to the cart
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return null
-
     setIsAdding(true)
-
-    await addToCart({
-      variantId: selectedVariant.id,
-      quantity: 1,
-      countryCode,
-    })
-
+    await addToCart({ variantId: selectedVariant.id, quantity: 1, countryCode, })
     setIsAdding(false)
   }
 
@@ -141,7 +171,7 @@ export default function ProductActions({
     <>
       <div className="flex flex-col gap-y-2" ref={actionsRef}>
         <div>
-          {(product.variants?.length ?? 0) > 1 && (
+          {product.variants && (
             <div className="flex flex-col gap-y-4">
               {(product.options || []).map((option) => {
                 return (
@@ -153,6 +183,9 @@ export default function ProductActions({
                       title={option.title ?? ""}
                       data-testid="product-options"
                       disabled={!!disabled || isAdding}
+                      isValDisabled={(val) =>
+                        isOptionValueDisabled(option.id, val)
+                      }
                     />
                   </div>
                 )
@@ -174,15 +207,15 @@ export default function ProductActions({
             !isValidVariant
           }
           variant="primary"
-          className="w-full h-10"
+          className="w-full h-12 text-base font-semibold uppercase tracking-wider rounded-xl transition-all duration-300 transform active:scale-[0.98] hover:scale-[1.01] hover:shadow-lg dark:hover:neon-glow"
           isLoading={isAdding}
           data-testid="add-product-button"
         >
           {!selectedVariant && !options
             ? t("Select variant")
             : !inStock || !isValidVariant
-            ? t("Out of stock")
-            : t("Add to cart")}
+              ? t("Out of stock")
+              : t("Add to cart")}
         </Button>
         <MobileActions
           product={product}
